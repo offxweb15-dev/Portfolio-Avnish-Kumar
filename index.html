@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avnish Kumar | Web Developer</title>
+    <meta name="description" content="Avnish Kumar - Web Developer with skills in HTML, CSS, and JavaScript. Check out my projects and get in touch!" />
+    <!-- Preconnect to external domains -->
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Preload critical CSS -->
+    <link rel="preload" href="css/style.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="css/anime-theme.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    
+    <!-- Load non-critical CSS asynchronously -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" media="print" onload="this.media='all'">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Press+Start+2P&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    
+    <!-- Fallback for non-JavaScript -->
+    <noscript>
+        <link rel="stylesheet" href="css/style.css">
+        <link rel="stylesheet" href="css/anime-theme.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    </noscript>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        .anime-font {
+            font-family: 'Anime Ace', 'Press Start 2P', cursive;
+        }
+    </style>
+</head>
+<body class="anime-theme">
+    <!-- Particles Background -->
+    <div class="particles" id="particles-js"></div>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <a href="#home">WEB15</a>
+            </div>
+            <div class="nav-links">
+                <a href="#home" class="nav-link">Home</a>
+                <a href="#about" class="nav-link">About</a>
+                <a href="#skills" class="nav-link">Skills</a>
+                <a href="#projects" class="nav-link">Projects</a>
+                <a href="#blog" class="nav-link">Blog</a>
+                <a href="#contact" class="nav-link">Contact</a>
+                <a href="#contact" class="btn btn-primary">Hire Me</a>
+            </div>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section with Anime Theme -->
+    <section id="home" class="hero anime-theme">
+        <div class="speed-lines" id="speedLines"></div>
+        <!-- Add your character image here -->
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="glitch anime-text" data-text="Konnichiwa! I'm [Your Name]">
+                    <span class="greeting">Konnichiwa!</span> 
+                    <span class="name-container">
+                        <span class="anime-font name-text name-avnish" style="color: var(--anime-primary);">I'm Avnish Kumar</span>
+                       
+                    </span>
+                </h1>
+                <p class="subtitle">Frontend Developer & Anime Enthusiast<br>Creating digital experiences that tell a story</p>
+                <div class="speech-bubble">
+                    こんにちは！Welcome to my portfolio!
+                </div>
+                <div class="cta-buttons">
+                    <a href="#projects" class="btn btn-primary">View Projects</a>
+                    <a href="#contact" class="btn btn-outline">Contact Me</a>
+                </div>
+                </div>
+            </div>
+        </div>
+        <div class="floating-elements">
+            <div class="cube"></div>
+            <div class="circle"></div>
+            <div class="triangle"></div>
+        </div>
+    </section>
+
+    <!-- About Section with Manga Style -->
+    <section id="about" class="about">
+        <!-- Add your about section image here -->
+        <div class="container">
+            <h2 class="section-title anime-style">About <span style="color: var(--anime-primary);">私</span></h2>
+            <div class="about-content">
+                <div class="about-img">
+                    <div class="img-container anime-float">
+                        <img src="img/portfolio.jpg" alt="Avnish Kumar" class="profile-image">
+                        <div class="image-border"></div>
+                        <div class="image-glow"></div>
+                    </div>
+                </div>
+                <div class="about-text">
+                    <h3>Web Developer</h3>
+                    <div class="about-cards">
+                        <div class="about-card">
+                            <h4>WHO AM I</h4>
+                            <p>I'm Avnish, a web developer with a strong foundation in HTML, CSS, and JavaScript. I recently completed a certification and I'm excited to start building real-world projects.</p>
+                        </div>
+                        <div class="about-card">
+                            <h4>WHAT I'VE LEARNED</h4>
+                            <p>I've worked on front-end fundamentals, responsive design, and JavaScript basics. I'm also learning modern tools like Git, VS Code, and frameworks step by step.</p>
+                        </div>
+                        <div class="about-card">
+                            <h4>WHAT I AM LOOKING FOR</h4>
+                            <p>Right now, I'm focusing on creating practical projects to sharpen my skills. I'm open to internships, collaborations, and opportunities where I can contribute while learning from real-world challenges.</p>
+                        </div>
+                    </div>
+                    <a href="Resume_AvnishKumar.pdf" class="btn btn-primary" download="AvnishKumar_Resume.pdf">Download CV</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="skills">
+        <div class="container">
+            <h2 class="section-title anime-style">My <span style="color: var(--anime-primary);">スキル</span></h2>
+            <div class="skills-container">
+                <div class="skill-category">
+                    <div class="skills-grid">
+                        <!-- More skill cards will be added via JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="projects">
+        <div class="container">
+            <h2 class="section-title anime-style">My <span style="color: var(--anime-primary);">プロジェクト</span></h2>
+            <div class="projects-filter">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="web">Web</button>
+                <button class="filter-btn" data-filter="app">App</button>
+                <button class="filter-btn" data-filter="design">Design</button>
+            </div>
+            <div class="projects-grid" id="projects-container">
+                <!-- Project items will be added via JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Blog Section -->
+    <section id="blog" class="blog">
+        <div class="container">
+            <h2 class="section-title anime-style">Latest <span style="color: var(--anime-primary);">ブログ</span> Posts</h2>
+            <div class="coming-soon">
+                <i class="fas fa-blog"></i>
+                <h3>Coming Soon</h3>
+                <p>Exciting content is on its way! Check back later for updates.</p>
+                </div>
+            <div class="text-center">
+                <a href="#" class="btn btn-primary">View All Posts</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <h2 class="section-title anime-style">Get In <span style="color: var(--anime-primary);">連絡</span></h2>
+            <div class="contact-content">
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <div class="icon"><i class="fas fa-envelope"></i></div>
+                        <div class="text">
+                            <h3>Email</h3>
+                            <a href="mailto:avanishmourya6@gmail.com">avanishmourya6@gmail.com</a>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="icon"><i class="fas fa-phone"></i></div>
+                        <div class="text">
+                            <h3>Phone</h3>
+                            <a href="tel:+917464992126">+91 74649 92126</a>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="icon"><i class="fas fa-map-marker-alt"></i></div>
+                        <div class="text">
+                            <h3>Location</h3>
+                            <p>Muzaffarnagar, Uttar Pradesh, India</p>
+                        </div>
+                    </div>
+                    <div class="social-links" role="list">
+                        <a href="https://github.com/avanishmourya6-web" class="social-icon" aria-label="GitHub profile" rel="noopener noreferrer">
+                            <i class="fab fa-github" aria-hidden="true"></i>
+                            <span class="sr-only">GitHub</span>
+                        </a>
+                        <a href="https://www.linkedin.com/in/avnish-kumar-92a934390/" class="social-icon" aria-label="LinkedIn profile" rel="noopener noreferrer">
+                            <i class="fab fa-linkedin" aria-hidden="true"></i>
+                            <span class="sr-only">LinkedIn</span>
+                        </a>
+                        <a href="https://twitter.com/offx_avnish_" class="social-icon" aria-label="Twitter profile" rel="noopener noreferrer">
+                            <i class="fab fa-twitter" aria-hidden="true"></i>
+                            <span class="sr-only">Twitter</span>
+                        </a>
+                        <a href="https://www.instagram.com/offx._web15/" class="social-icon" aria-label="Instagram profile" rel="noopener noreferrer">
+                            <i class="fab fa-instagram" aria-hidden="true"></i>
+                            <span class="sr-only">Instagram</span>
+                        </a>
+                    </div>
+                </div>
+                <form class="contact-form" id="contactForm" method="POST" action="#">
+                    <div class="form-group">
+                        <label for="name" class="form-label">Your Name</label>
+                        <input type="text" id="name" name="name" placeholder="Your Name" autocomplete="name" required
+                            aria-required="true">
+                    </div>
+                    <div class="form-group">
+                        <label for="email" class="form-label">Your Email</label>
+                        <input type="email" id="email" name="email" placeholder="Your Email" autocomplete="email" required
+                            aria-required="true">
+                    </div>
+                    <div class="form-group">
+                        <label for="subject" class="form-label">Subject</label>
+                        <input type="text" id="subject" name="subject" placeholder="Subject" required
+                            aria-required="true">
+                    </div>
+                    <div class="form-group">
+                        <label for="message" class="form-label">Your Message</label>
+                        <textarea id="message" name="message" placeholder="Your Message" required
+                            aria-required="true"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <span class="btn-text">Send Message</span>
+                        <span class="btn-icon" aria-hidden="true">
+                            <i class="fas fa-paper-plane"></i>
+                        </span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <a href="#home">WEB15</a>
+                </div>
+                <p>© 2025 Your Name. All Rights Reserved</p>
+                <div class="footer-links">
+                    <a href="#home">Home</a>
+                    <a href="#about">About</a>
+                    <a href="#skills">Skills</a>
+                    <a href="#projects">Projects</a>
+                    <a href="#blog">Blog</a>
+                    <a href="#contact">Contact</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <a href="#" class="back-to-top">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+
+    <!-- Anime Theme JavaScript -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script src="js/anime-effects.js"></script>
+    <!-- Main JavaScript -->
+    <script src="js/main.js"></script>
+</body>
+</html>
