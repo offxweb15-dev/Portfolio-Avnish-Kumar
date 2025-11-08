@@ -214,7 +214,11 @@
                         </a>
                     </div>
                 </div>
-                <form class="contact-form" id="contactForm" method="POST" action="#">
+                <form class="contact-form" id="contactForm" method="POST">
+                        <!-- Web3Forms Configuration -->
+                        <input type="hidden" name="access_key" value="c84a6e9c-4205-4c0d-91c3-36ba5af39890">
+                        <input type="hidden" name="subject" value="New Contact Form Submission">
+                        <input type="checkbox" name="botcheck" class="hidden" style="display: none !important; visibility: hidden; position: absolute; left: -9999px;" tabindex="-1" aria-hidden="true">
                     <div class="form-group">
                         <label for="name" class="form-label">Your Name</label>
                         <input type="text" id="name" name="name" placeholder="Your Name" autocomplete="name" required

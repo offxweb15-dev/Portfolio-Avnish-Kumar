@@ -273,17 +273,8 @@ function initBlog() {
 
 // Contact Form Submission
 function initContactForm() {
-    const form = document.getElementById('contact-form');
+    const form = document.getElementById('contactForm');
     if (!form) return;
-
-    // Add Web3Forms access key input if not exists
-    if (!form.querySelector('input[name="access_key"]')) {
-        const accessKeyInput = document.createElement('input');
-        accessKeyInput.type = 'hidden';
-        accessKeyInput.name = 'access_key';
-        accessKeyInput.value = 'c84a6e9c-4205-4c0d-91c3-36ba5af39890'; // Same key as in AVI_git
-        form.appendChild(accessKeyInput);
-    }
 
     // Form submission handler
     form.addEventListener('submit', async (e) => {
@@ -310,35 +301,53 @@ function initContactForm() {
         submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
         
         try {
-            const formData = new FormData(form);
+            // Get form elements
+            const name = form.querySelector('[name="name"]').value;
+            const email = form.querySelector('[name="email"]').value;
+            const subject = form.querySelector('[name="subject"]').value;
+            const message = form.querySelector('[name="message"]').value;
+            
+            // Create a simple form data object
+            const formData = {
+                access_key: 'c84a6e9c-4205-4c0d-91c3-36ba5af39890',
+                name: name,
+                email: email,
+                subject: subject || 'New Contact Form Submission',
+                message: message,
+                botcheck: '', // This should be empty for the honeypot to work
+                from_name: name || 'Portfolio Contact Form',
+                replyto: email,
+                website: window.location.href
+            };
+
+            // Log the data being sent (for debugging)
+            console.log('Sending form data:', JSON.stringify(formData, null, 2));
+            
+            // Send to Web3Forms
             const response = await fetch('https://api.web3forms.com/submit', {
                 method: 'POST',
-                body: formData,
                 headers: {
+                    'Content-Type': 'application/json',
                     'Accept': 'application/json'
-                }
+                },
+                body: JSON.stringify(formData)
             });
             
             const result = await response.json();
             
             if (result.success) {
                 // Show success message
-                status.textContent = 'Message sent successfully!';
+                status.textContent = 'Message sent successfully! I\'ll get back to you soon.';
                 status.style.color = '#4BB543';
                 status.style.backgroundColor = 'rgba(75, 181, 67, 0.1)';
                 status.style.border = '1px solid #4BB543';
                 form.reset();
-                
-                // Scroll to status message
-                setTimeout(() => {
-                    status.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                }, 100);
             } else {
-                throw new Error(result.message || 'Something went wrong');
+                throw new Error(result.message || 'Failed to send message');
             }
         } catch (error) {
             console.error('Error:', error);
-            status.textContent = 'Failed to send message. Please try again.';
+            status.textContent = 'Failed to send message. Please try again or contact me directly at avanishmourya6@gmail.com';
             status.style.color = '#ff4d4d';
             status.style.backgroundColor = 'rgba(255, 77, 77, 0.1)';
             status.style.border = '1px solid #ff4d4d';
@@ -346,6 +355,9 @@ function initContactForm() {
             // Re-enable button and reset text
             submitBtn.disabled = false;
             submitBtn.innerHTML = submitText;
+            
+            // Scroll to status message
+            status.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             
             // Hide status message after 5 seconds
             setTimeout(() => {
@@ -358,7 +370,6 @@ function initContactForm() {
         }
     });
 }
-
 // Animate elements on scroll
 function animateOnScroll() {
     const elements = document.querySelectorAll('.skill-card, .project-card, .blog-card, .about-content, .contact-content');
