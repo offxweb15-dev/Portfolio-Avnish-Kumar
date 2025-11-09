@@ -287,36 +287,6 @@ function addRippleEffect() {
     });
 }
 
-// Initialize all effects
-function initAnimeEffects() {
-    initTypingEffect();
-    addRippleEffect();
-    
-    // Add hover effect to project cards
-    const projectCards = document.querySelectorAll('.project-card');
-    projectCards.forEach(card => {
-        card.addEventListener('mousemove', (e) => {
-            const rect = card.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            
-            card.style.setProperty('--mouse-x', `${x}px`);
-            card.style.setProperty('--mouse-y', `${y}px`);
-        });
-    });
-    
-    // Add parallax effect to hero section
-    const hero = document.querySelector('.hero');
-    if (hero) {
-        window.addEventListener('mousemove', (e) => {
-            const x = (window.innerWidth / 2 - e.pageX) / 50;
-            const y = (window.innerHeight / 2 - e.pageY) / 50;
-            
-            hero.style.backgroundPosition = `${x}px ${y}px`;
-        });
-    }
-}
-
 // Text animation between names
 function initNameAnimation() {
     const nameAvnish = document.querySelector('.name-avnish');
@@ -362,22 +332,65 @@ function initNameAnimation() {
         }
     }
     
-    // Start the animation after initial delay
+    // Start the animation
     setTimeout(switchName, 3000);
 }
 
-// Add name animation to the init function
-const originalInitAnimeEffects = initAnimeEffects;
-initAnimeEffects = function() {
-    originalInitAnimeEffects();
+// Initialize all effects
+function initAnimeEffects() {
+    // Initialize particles
+    if (typeof particlesJS !== 'undefined') {
+        initParticles();
+    }
+
+    // Initialize other effects
+    createSpeedLines();
+    createFloatingParticles();
+    initSkillCardEffects();
+    initScrollReveal();
+    initTypingEffect();
+    addRippleEffect();
     initNameAnimation();
-};
+
+    // Add hover effect to project cards
+    const projectCards = document.querySelectorAll('.project-card');
+    projectCards.forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            card.style.setProperty('--mouse-x', `${x}px`);
+            card.style.setProperty('--mouse-y', `${y}px`);
+        });
+    });
+    
+    // Add parallax effect to hero section
+    const hero = document.querySelector('.hero');
+    if (hero) {
+        window.addEventListener('mousemove', (e) => {
+            const x = (window.innerWidth / 2 - e.pageX) / 50;
+            const y = (window.innerHeight / 2 - e.pageY) / 50;
+            
+            hero.style.backgroundPosition = `${x}px ${y}px`;
+        });
+    }
+
+    // Add keyboard event listener for easter egg
+    document.addEventListener('keydown', (e) => {
+        if (e.key.toLowerCase() === 'a') {
+            document.body.classList.toggle('anime-mode');
+            if (document.body.classList.contains('anime-mode')) {
+                createConfetti();
+            }
+        }
+    });
+}
 
 // Call the initialization function when the DOM is fully loaded
 document.addEventListener('DOMContentLoaded', initAnimeEffects);
 
-// Add a fun easter egg - press 'A' to toggle anime mode
-let animeMode = false;
+// ... rest of the code remains the same ...
 document.addEventListener('keydown', (e) => {
     if (e.key.toLowerCase() === 'a') {
         animeMode = !animeMode;
@@ -481,3 +494,10 @@ confettiStyle.textContent = `
     }
 `;
 document.head.appendChild(confettiStyle);
+
+// Initialize the application when the DOM is fully loaded
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAnimeEffects);
+} else {
+    initAnimeEffects();
+}
