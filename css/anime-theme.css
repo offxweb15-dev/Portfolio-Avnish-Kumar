@@ -58,8 +58,19 @@
 }
 
 .greeting {
-    display: inline-block;
+    display: block;
     white-space: nowrap;
+    text-align: center;
+    margin: 0 auto;
+    line-height: 1.5;
+}
+
+.greeting-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
 }
 
 .name-container {
@@ -285,6 +296,7 @@ textarea:focus {
     min-width: 300px;
     max-width: 400px;
     position: relative;
+    position: relative;
     z-index: 1;
     padding: 20px;
 }
@@ -419,9 +431,15 @@ textarea:focus {
         text-align: center;
     }
     
-    .about-img, .about-text {
+        .about-img, .about-text {
         min-width: 100%;
         max-width: 100%;
+        margin-bottom: 30px;
+    }
+    
+    .about-img .image-container {
+        max-width: 80%;
+        margin: 0 auto;
     }
     
     .img-container {

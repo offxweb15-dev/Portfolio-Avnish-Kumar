@@ -3,41 +3,151 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Avnish Kumar | Web Developer</title>
     <meta name="description" content="Avnish Kumar - Web Developer with skills in HTML, CSS, and JavaScript. Check out my projects and get in touch!" />
+    <title>Avnish Kumar | Web Developer</title>
     <link rel="icon" href="favicon.ico" type="image/x-icon">
-    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
-    <!-- Preconnect to external domains -->
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-    <!-- Preconnect to external domains -->
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
+    
+    <!-- Preconnect to critical domains with dns-prefetch fallback -->
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+    
+    <!-- Preload critical font with font-display: swap -->
+    <style>
+    @font-face {
+        font-family: 'Poppins';
+        font-style: normal;
+        font-weight: 400;
+        font-display: swap;
+        src: local('Poppins Regular'), local('Poppins-Regular'),
+             url('https://fonts.gstatic.com/s/poppins/v20/pxiEyp8kv8JHgFVrJJfecg.woff2') format('woff2');
+        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    }
+    </style>
+    
+    <!-- Critical CSS (above-the-fold styles) -->
+    <style>
+      /* Critical: Font Face */
+      @font-face {
+        font-family: 'Poppins';
+        font-style: normal;
+        font-weight: 400;
+        font-display: swap;
+        src: local('Poppins Regular'), local('Poppins-Regular'),
+             url('https://fonts.gstatic.com/s/poppins/v15/pxiEyp8kv8JHgFVrJJfecg.woff2') format('woff2');
+        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+      }
+      
+      /* Critical: Layout and Typography */
+      html { scroll-behavior: smooth; }
+      body { 
+        font-family: 'Poppins', sans-serif;
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+      }
+      
+      /* Critical: Hero Section */
+      .hero { 
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        position: relative;
+        overflow: hidden;
+        opacity: 1; /* Make hero visible by default */
+        transition: opacity 0.3s ease;
+        padding: 100px 0 80px;
+        margin-top: 0;
+        background: linear-gradient(135deg, var(--darker-bg) 0%, var(--dark-bg) 100%);
+      }
+      
+      /* Critical: Navigation */
+      .navbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 1000;
+        transition: all 0.3s ease;
+      }
+      
+      /* Critical: Buttons */
+      .btn {
+        display: inline-block;
+        padding: 12px 30px;
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-align: center;
+      }
+    </style>
     
     <!-- Preload critical CSS -->
-    <link rel="preload" href="css/style.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <link rel="preload" href="css/anime-theme.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="css/style.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     
-    <!-- Preload critical fonts -->
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Press+Start+2P&display=swap&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <!-- Preload critical JS -->
+    <link rel="preload" href="js/main.js" as="script">
+    <link rel="preload" href="js/anime-effects.js" as="script">
+    <link rel="preload" href="js/particles.min.js" as="script">
     
     <!-- Load non-critical CSS asynchronously -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Press+Start+2P&display=swap&display=swap" rel="stylesheet" media="print" onload="this.onload=null;this.media='all'">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" media="print" onload="this.onload=null;this.media='all'">
+    <link rel="stylesheet" href="css/anime-theme.css" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="css/anime-theme.css"></noscript>
+    
+    <!-- Font Awesome with font-display: swap -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" 
+          integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" 
+          crossorigin="anonymous" 
+          referrerpolicy="no-referrer" />
+    <noscript>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+      <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    </noscript>
+    
+    <!-- Inline critical CSS -->
+    <style>
+        /* Critical CSS for above-the-fold content */
+        .anime-font { font-family: 'Anime Ace', 'Press Start 2P', cursive; }
+        
+        /* Preloader styles */
+        .preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0f0f1a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease-out;
+        }
+        .preloader.fade-out { opacity: 0; }
+        .loader {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--anime-primary);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
     
     <!-- Fallback for non-JavaScript -->
     <noscript>
-        <link rel="stylesheet" href="css/style.css">
+        <link rel="stylesheet" href="css/style.min.css">
         <link rel="stylesheet" href="css/anime-theme.css">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+        <link rel="stylesheet" href="css/fontawesome/css/all.min.css">
     </noscript>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
-        .anime-font {
-            font-family: 'Anime Ace', 'Press Start 2P', cursive;
-        }
-    </style>
 </head>
 <body class="anime-theme">
     <!-- Particles Background -->
@@ -71,12 +181,11 @@
         <!-- Add your character image here -->
         <div class="container">
             <div class="hero-content">
-                <h1 class="glitch anime-text" data-text="Konnichiwa! I'm [Your Name]">
-                    <span class="greeting">Konnichiwa!</span> 
-                    <span class="name-container">
-                        <span class="anime-font name-text name-avnish" style="color: var(--anime-primary);">I'm Avnish Kumar</span>
-                       
-                    </span>
+                <h1 class="glitch anime-text" data-text="Konnichiwa! I'm Avnish Kumar">
+                    <div class="greeting-container">
+                        <div class="greeting">Konnichiwa!</div>
+                        <div class="greeting">I'm Avnish Kumar</div>
+                    </div>
                 </h1>
                 <p class="subtitle">Frontend Developer & Anime Enthusiast<br>Creating digital experiences that tell a story</p>
                 <div class="speech-bubble">
@@ -103,15 +212,31 @@
             <h2 class="section-title anime-style">About <span style="color: var(--anime-primary);">私</span></h2>
             <div class="about-content">
                 <div class="about-img">
-                    <div class="img-container anime-float">
-                        <img 
-                        src="img/portfolio.jpg" 
-                        alt="Avnish Kumar" 
-                        class="profile-image"
-                        loading="lazy"
-                        decoding="async"
-                        width="400"
-                        height="700">
+                    <div class="image-container">
+                        <picture>
+                            <!-- WebP format with responsive sources -->
+                            <source 
+                                type="image/webp" 
+                                srcset="img/portfolio.webp 1x"
+                                sizes="(max-width: 768px) 90vw, (max-width: 1200px) 45vw, 35vw"
+                                loading="lazy"
+                                decoding="async"
+                                width="400"
+                                height="700"
+                            >
+                            <!-- Fallback to original WebP -->
+                            <img 
+                                src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 700'%3E%3C/svg%3E"
+                                data-src="img/portfolio.webp"
+                                loading="lazy"
+                                decoding="async"
+                                width="400"
+                                height="700"
+                                alt="Avnish Kumar - Web Developer"
+                                class="portfolio-image lazyload"
+                                onload="this.parentElement.parentElement.classList.add('loaded')"
+                            >
+                        </picture>
                         <div class="image-border"></div>
                         <div class="image-glow"></div>
                     </div>
@@ -290,53 +415,99 @@
         <i class="fas fa-arrow-up"></i>
     </a>
 
-    <!-- Anime Theme JavaScript -->
-    <script src="js/anime-effects.js"></script>
-    <!-- Main JavaScript -->
-    <script src="js/main.js"></script>
-    <!-- Particles.js library -->
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <!-- Preload critical resources -->
+    <link rel="preload" href="js/particles.min.js" as="script">
+    <link rel="preload" href="js/anime-effects.js" as="script">
+    <link rel="preload" href="js/main.js" as="script">
+    
+    <!-- Load scripts with defer and async where appropriate -->
+    <script src="js/particles.min.js" defer></script>
+    <script src="js/anime-effects.js" defer></script>
+    <script src="js/main.js" defer></script>
+    
+    <!-- Service Worker Registration with better error handling -->
     <script>
-        // Initialize particles.js
-        document.addEventListener('DOMContentLoaded', function() {
-            if (typeof particlesJS !== 'undefined') {
-                particlesJS('particles-js', {
-                    // You can customize the particles configuration here
-                    particles: {
-                        number: { value: 80 },
-                        color: { value: '#ffffff' },
-                        shape: { type: 'circle' },
-                        opacity: { value: 0.5 },
-                        size: { value: 3, random: true },
-                        line_linked: {
-                            enable: true,
-                            distance: 150,
-                            color: '#ffffff',
-                            opacity: 0.4,
-                            width: 1
-                        },
-                        move: {
-                            enable: true,
-                            speed: 2,
-                            direction: 'none',
-                            random: false,
-                            straight: false,
-                            out_mode: 'out',
-                            bounce: false
-                        }
-                    },
-                    interactivity: {
-                        detect_on: 'canvas',
-                        events: {
-                            onhover: { enable: true, mode: 'grab' },
-                            onclick: { enable: true, mode: 'push' },
-                            resize: true
-                        }
-                    },
-                    retina_detect: true
-                });
+    if ('serviceWorker' in navigator) {
+        // Unregister any existing service workers first
+        navigator.serviceWorker.getRegistrations().then(registrations => {
+            for (const registration of registrations) {
+                console.log('Unregistering old service worker');
+                registration.unregister();
+            }
+            
+            // Register the new service worker
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                        
+                        // Check for updates
+                        registration.update().then(() => {
+                            console.log('ServiceWorker updated');
+                        }).catch(err => {
+                            console.log('ServiceWorker update check failed:', err);
+                        });
+                    })
+                    .catch(err => {
+                        console.error('ServiceWorker registration failed: ', err);
+                    });
+            });
+        });
+        
+        // Force update the service worker when the page is fully loaded
+        window.addEventListener('load', function() {
+            if (navigator.serviceWorker.controller) {
+                navigator.serviceWorker.controller.postMessage({type: 'SKIP_WAITING'});
             }
         });
+    }
+    </script>
+    
+    <!-- Inline critical data and scripts -->
+    <script>
+        // Create a single object to hold all data
+        window.portfolioData = {
+            skills: {
+                frontend: [
+                    { name: 'HTML5', icon: 'fab fa-html5', level: 90 },
+                    { name: 'CSS3', icon: 'fab fa-css3-alt', level: 85 },
+                    { name: 'JavaScript', icon: 'fab fa-js', level: 80 },
+                    { name: 'React', icon: 'fab fa-react', level: 75 },
+                    { name: 'Bootstrap', icon: 'fab fa-bootstrap', level: 85 },
+                    { name: 'Sass', icon: 'fab fa-sass', level: 75 }
+                ],
+                backend: [
+                    { name: 'Node.js', icon: 'fab fa-node-js', level: 75 },
+                    { name: 'Express', icon: 'fas fa-server', level: 70 },
+                    { name: 'MongoDB', icon: 'fas fa-database', level: 70 },
+                    { name: 'RESTful APIs', icon: 'fas fa-code', level: 75 }
+                ],
+                tools: [
+                    { name: 'Git', icon: 'fab fa-git-alt', level: 80 },
+                    { name: 'GitHub', icon: 'fab fa-github', level: 80 },
+                    { name: 'VS Code', icon: 'fas fa-code', level: 90 },
+                    { name: 'Responsive Design', icon: 'fas fa-mobile-alt', level: 85 }
+                ]
+            },
+            projects: [
+                {
+                    title: 'Portfolio Website',
+                    description: 'A responsive portfolio website built with HTML, CSS, and JavaScript.',
+                    image: 'img/portfolio.webp',
+                    category: 'web',
+                    demo: '#',
+                    github: '#'
+                },
+                {
+                    title: 'Weather App',
+                    description: 'A weather application that shows current weather and forecast using a weather API.',
+                    image: 'https://via.placeholder.com/600x400/1a1a2e/ffffff?text=Weather+App',
+                    category: 'web',
+                    demo: '#',
+                    github: '#'
+                }
+            ]
+        };
     </script>
 </body>
 </html>

@@ -1,0 +1,166 @@
+# Enable GZIP compression with Brotli fallback
+<IfModule mod_deflate.c>
+    # Compress HTML, CSS, JavaScript, Text, XML and fonts
+    AddOutputFilterByType DEFLATE application/javascript
+    AddOutputFilterByType DEFLATE application/rss+xml
+    AddOutputFilterByType DEFLATE application/vnd.ms-fontobject
+    AddOutputFilterByType DEFLATE application/x-font
+    AddOutputFilterByType DEFLATE application/x-font-opentype
+    AddOutputFilterByType DEFLATE application/x-font-otf
+    AddOutputFilterByType DEFLATE application/x-font-truetype
+    AddOutputFilterByType DEFLATE application/x-font-ttf
+    AddOutputFilterByType DEFLATE application/x-javascript
+    AddOutputFilterByType DEFLATE application/xhtml+xml
+    AddOutputFilterByType DEFLATE application/xml
+    AddOutputFilterByType DEFLATE font/opentype
+    AddOutputFilterByType DEFLATE font/otf
+    AddOutputFilterByType DEFLATE font/ttf
+    AddOutputFilterByType DEFLATE image/svg+xml
+    AddOutputFilterByType DEFLATE image/x-icon
+    AddOutputFilterByType DEFLATE text/css
+    AddOutputFilterByType DEFLATE text/html
+    AddOutputFilterByType DEFLATE text/javascript
+    AddOutputFilterByType DEFLATE text/plain
+    AddOutputFilterByType DEFLATE text/xml
+    
+    # Remove browser bugs (only needed for really old browsers)
+    BrowserMatch ^Mozilla/4\.0[678] no-gzip
+    BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
+    
+    # Set the Vary: Accept-Encoding header
+    <IfModule mod_headers.c>
+        Header append Vary: Accept-Encoding
+    </IfModule>
+</IfModule>
+
+# Browser caching
+<IfModule mod_expires.c>
+    ExpiresActive On
+    
+    # Images
+    ExpiresByType image/jpg "access plus 1 year"
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/gif "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/webp "access plus 1 year"
+    ExpiresByType image/svg+xml "access plus 1 year"
+    ExpiresByType image/x-icon "access plus 1 year"
+    
+    # CSS, JavaScript
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+    ExpiresByType application/x-javascript "access plus 1 month"
+    
+    # Others
+    ExpiresByType application/pdf "access plus 1 month"
+    ExpiresByType application/x-shockwave-flash "access plus 1 month"
+    
+    ExpiresDefault "access plus 2 days"
+</IfModule>
+
+# Security Headers
+<IfModule mod_headers.c>
+    # CORS for fonts and assets
+    <FilesMatch "\.(ttf|ttc|otf|eot|woff|woff2|css|js|svg|png|jpg|jpeg|gif|webp)$">
+        Header set Access-Control-Allow-Origin "*"
+    </FilesMatch>
+    
+    # X-Content-Type-Options: nosniff - Prevents MIME type sniffing
+    Header always set X-Content-Type-Options "nosniff"
+    
+    # X-Frame-Options: SAMEORIGIN - Prevents clickjacking
+    Header always set X-Frame-Options "SAMEORIGIN"
+    
+    # X-XSS-Protection - Enables XSS filtering
+    Header always set X-XSS-Protection "1; mode=block"
+    
+    # Referrer-Policy - Controls referrer information
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    
+    # Feature Policy - Controls which features can be used
+    Header always set Feature-Policy "camera 'none'; microphone 'none'; geolocation 'none';"
+    
+    # Permissions Policy - Replaces Feature Policy
+    Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+    
+    # Remove X-Powered-By header
+    Header unset X-Powered-By
+    
+    # Set HSTS header (uncomment after testing)
+    # Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+    
+    # Set Content Security Policy (CSP) - adjust as needed
+    # Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https:; font-src 'self' data: https:; connect-src 'self' https:;"
+</IfModule>
+
+# Enable rewrite engine
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    
+    # Remove trailing slashes
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)/$ /$1 [L,R=301]
+    
+    # Remove .html extension
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME}\.html -f
+    RewriteRule ^(.*)$ $1.html [L]
+    
+    # Cache-Control Headers for specific file types
+    <FilesMatch "\.(ico|pdf|flv|jpg|jpeg|png|gif|js|css|swf|webp|svg|woff|woff2|ttf|eot)$">
+        Header set Cache-Control "max-age=31536000, public"
+    </FilesMatch>
+    
+    # Disable directory browsing
+    Options -Indexes
+    
+    # Block access to hidden files and directories
+    <IfModule mod_rewrite.c>
+        RewriteCond %{SCRIPT_FILENAME} -d [OR]
+        RewriteCond %{SCRIPT_FILENAME} -f
+        RewriteRule "(^|/)\." - [F]
+    </IfModule>
+    
+    # Block access to sensitive files (Apache 2.4+ syntax)
+    <FilesMatch "^\.|composer\.json|composer\.lock|package\.json|package-lock\.json|web\.config|\.gitignore|README\.md|CHANGELOG\.md|LICENSE\.txt|\.gitmodules">
+        Require all denied
+    </FilesMatch>
+    
+    # Prevent access to .htaccess and .htpasswd (Apache 2.4+ syntax)
+    <FilesMatch "^\.ht">
+        Require all denied
+    </FilesMatch>
+    # Redirect to HTTPS if not already
+    # Uncomment these lines if you have SSL certificate
+    # RewriteCond %{HTTPS} off
+    # RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+    
+    # Remove www from URL
+    # RewriteCond %{HTTP_HOST} ^www\.(.*)$ [NC]
+    # RewriteRule ^(.*)$ https://%1/$1 [R=301,L]
+    
+    # Redirect index.php to root
+    RewriteCond %{THE_REQUEST} ^.*/index\.php
+    RewriteRule ^(.*)index.php$ /$1 [R=301,L]
+</IfModule>
+
+# Security headers
+<IfModule mod_headers.c>
+    # Protect against XSS attacks
+    Header set X-XSS-Protection "1; mode=block"
+    
+    # Prevent MIME-type sniffing
+    Header set X-Content-Type-Options "nosniff"
+    
+    # Protect against clickjacking
+    Header always append X-Frame-Options SAMEORIGIN
+    
+    # Enable HSTS (uncomment if you have SSL)
+    # Header set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+</IfModule>
+
+# Disable directory browsing
+Options -Indexes
+
+# Disable server signature
+ServerSignature Off

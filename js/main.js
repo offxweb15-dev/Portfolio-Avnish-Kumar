@@ -1,16 +1,36 @@
 // Preloader
-window.addEventListener('load', () => {
+const preloadImages = () => {
+    const images = document.querySelectorAll('img[data-src]');
+    const imageObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const img = entry.target;
+                img.src = img.dataset.src;
+                img.removeAttribute('data-src');
+                observer.unobserve(img);
+            }
+        });
+    });
+
+    images.forEach(img => imageObserver.observe(img));
+};
+
+document.addEventListener('DOMContentLoaded', () => {
     const preloader = document.createElement('div');
     preloader.className = 'preloader';
     preloader.innerHTML = '<div class="loader"></div>';
     document.body.prepend(preloader);
     
+    // Initialize lazy loading
+    preloadImages();
+    
+    // Remove preloader
     setTimeout(() => {
         preloader.classList.add('fade-out');
         setTimeout(() => {
             preloader.remove();
         }, 500);
-    }, 1500);
+    }, 1000); // Reduced from 1500ms to 1000ms for faster initial load
 });
 
 // Mobile Navigation Toggle
@@ -33,27 +53,39 @@ navLinkItems.forEach(link => {
     });
 });
 
-// Navbar scroll effect
-window.addEventListener('scroll', () => {
-    const navbar = document.querySelector('.navbar');
+// Optimized scroll handler with requestAnimationFrame
+let ticking = false;
+const navbar = document.querySelector('.navbar');
+const backToTopBtn = document.querySelector('.back-to-top');
+
+const updateNavbar = () => {
     if (window.scrollY > 50) {
         navbar.classList.add('scrolled');
     } else {
         navbar.classList.remove('scrolled');
     }
-});
-
-// Back to Top Button
-const backToTopBtn = document.querySelector('.back-to-top');
-
-window.addEventListener('scroll', () => {
+    
+    // Back to top button
     if (window.pageYOffset > 300) {
         backToTopBtn.classList.add('active');
     } else {
         backToTopBtn.classList.remove('active');
     }
-});
+    
+    ticking = false;
+};
 
+window.addEventListener('scroll', () => {
+    if (!ticking) {
+        window.requestAnimationFrame(updateNavbar);
+        ticking = true;
+    }
+}, { passive: true });
+
+// Initial check
+updateNavbar();
+
+// Smooth scroll for back to top
 backToTopBtn.addEventListener('click', (e) => {
     e.preventDefault();
     window.scrollTo({
@@ -391,26 +423,57 @@ function animateOnScroll() {
     });
 }
 
+// Initialize particles.js
+const initParticles = () => {
+    if (typeof particlesJS !== 'undefined' && document.getElementById('particles-js')) {
+        particlesJS('particles-js', {
+            particles: {
+                number: { value: 80 },
+                color: { value: '#ffffff' },
+                shape: { type: 'circle' },
+                opacity: { value: 0.5 },
+                size: { value: 3, random: true },
+                line_linked: {
+                    enable: true,
+                    distance: 150,
+                    color: '#ffffff',
+                    opacity: 0.4,
+                    width: 1
+                },
+                move: {
+                    enable: true,
+                    speed: 2,
+                    direction: 'none',
+                    random: false,
+                    straight: false,
+                    out_mode: 'out',
+                    bounce: false
+                }
+            },
+            interactivity: {
+                detect_on: 'canvas',
+                events: {
+                    onhover: { enable: true, mode: 'grab' },
+                    onclick: { enable: true, mode: 'push' },
+                    resize: true
+                },
+                modes: {
+                    grab: { distance: 140, line_linked: { opacity: 1 } },
+                    push: { particles_nb: 4 }
+                }
+            },
+            retina_detect: true
+        });
+    }
+};
+
 // Initialize all functions when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
+    initParticles();
     initSkills();
     initProjects();
     initContactForm();
     animateOnScroll();
-    
-    // Initialize AOS
-    AOS.init({
-        duration: 800,
-        easing: 'ease-in-out',
-        once: true
-    });
-    
-    // Initialize particles.js
-    if (document.getElementById('particles-js')) {
-        particlesJS('particles-js', {
-            // ... existing particles config ...
-        });
-    }
     
     // Add animation to skill levels on scroll
     const skillLevels = document.querySelectorAll('.skill-level .level');
