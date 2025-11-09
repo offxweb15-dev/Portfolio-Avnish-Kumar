@@ -10,10 +10,16 @@
     <!-- Preconnect to critical domains with dns-prefetch fallback -->
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
     <link rel="dns-prefetch" href="https://fonts.gstatic.com">
     <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
     
-    <!-- Preload critical font with font-display: swap -->
+    <!-- Preload critical resources -->
+    <link rel="preload" href="https://fonts.gstatic.com/s/poppins/v20/pxiEyp8kv8JHgFVrJJfecg.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="img/portfolio.webp" as="image">
+    
+    <!-- Critical CSS with font-display: swap -->
     <style>
     @font-face {
         font-family: 'Poppins';
@@ -86,24 +92,83 @@
     
     <!-- Preload critical CSS -->
     <link rel="preload" href="css/style.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="css/style.min.css"></noscript>
     
-    <!-- Preload critical JS -->
-    <link rel="preload" href="js/main.js" as="script">
-    <link rel="preload" href="js/anime-effects.js" as="script">
-    <link rel="preload" href="js/particles.min.js" as="script">
+    <!-- Load non-critical CSS with low priority -->
+    <link rel="preload" href="css/anime-theme.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="css/projects.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="css/blog.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
     
-    <!-- Load non-critical CSS asynchronously -->
-    <link rel="stylesheet" href="css/anime-theme.css" media="print" onload="this.media='all'">
-    <noscript><link rel="stylesheet" href="css/anime-theme.css"></noscript>
+    <!-- Load Google Fonts with display=swap and preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"></noscript>
     
-    <!-- Font Awesome with font-display: swap -->
+    <!-- Load non-critical CSS with requestIdleCallback -->
+    <script>
+    if ('requestIdleCallback' in window) {
+        requestIdleCallback(function() {
+            const styles = ['css/anime-theme.css', 'css/projects.css', 'css/blog.css'];
+            styles.forEach(href => {
+                const link = document.createElement('link');
+                link.rel = 'stylesheet';
+                link.href = href;
+                document.head.appendChild(link);
+            });
+        }, { timeout: 2000 });
+    }
+    </script>
+    
+    <!-- Load Font Awesome from CDN with fallback -->
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" 
           integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" 
           crossorigin="anonymous" 
-          referrerpolicy="no-referrer" />
+          referrerpolicy="no-referrer" 
+          onerror="this.onerror=null;this.href='https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css'">
+    
+    <!-- Image optimization settings -->
+    <script>
+    // Enable lazy loading for images and iframes
+    document.addEventListener('DOMContentLoaded', function() {
+        // Lazy load images
+        const lazyImages = [].slice.call(document.querySelectorAll('img[loading="lazy"]'));
+        
+        if ('IntersectionObserver' in window) {
+            const lazyImageObserver = new IntersectionObserver(function(entries, observer) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting) {
+                        const lazyImage = entry.target;
+                        lazyImage.src = lazyImage.dataset.src || lazyImage.src;
+                        lazyImage.classList.add('loaded');
+                        lazyImageObserver.unobserve(lazyImage);
+                    }
+                });
+            });
+
+            lazyImages.forEach(function(lazyImage) {
+                lazyImageObserver.observe(lazyImage);
+            });
+        }
+    });
+    </script>
+    
+    <!-- Preload critical images -->
+    <link rel="preload" as="image" href="img/portfolio.webp">
+    
+    <!-- Font Awesome with local fallback -->
+    <link rel="preconnect" href="https://kit.fontawesome.com">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" 
+          integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" 
+          crossorigin="anonymous" 
+          referrerpolicy="no-referrer" 
+          onerror="this.onerror=null;this.href='css/fontawesome/css/all.min.css'" />
+    <link rel="stylesheet" href="css/projects.css" />
+    <link rel="stylesheet" href="css/blog.css" />
     <noscript>
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+      <link rel="stylesheet" href="css/fontawesome/css/all.min.css">
       <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     </noscript>
     
@@ -224,17 +289,19 @@
                                 width="400"
                                 height="700"
                             >
-                            <!-- Fallback to original WebP -->
+                            <!-- Responsive image with modern loading -->
                             <img 
-                                src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 700'%3E%3C/svg%3E"
-                                data-src="img/portfolio.webp"
+                                src="img/portfolio.webp"
                                 loading="lazy"
-                                decoding="async"
+                                alt="Portfolio Image"
                                 width="400"
+                                height="700"
                                 height="700"
                                 alt="Avnish Kumar - Web Developer"
                                 class="portfolio-image lazyload"
+                                decoding="async"
                                 onload="this.parentElement.parentElement.classList.add('loaded')"
+                                onerror="this.onerror=null; this.src='img/fallback.jpg'"
                             >
                         </picture>
                         <div class="image-border"></div>
@@ -289,6 +356,9 @@
             </div>
             <div class="projects-grid" id="projects-container">
                 <!-- Project items will be added via JavaScript -->
+            </div>
+            <div class="view-all-container">
+                <a href="#" class="btn btn-primary view-all-btn">View All Projects</a>
             </div>
         </div>
     </section>
@@ -415,54 +485,438 @@
         <i class="fas fa-arrow-up"></i>
     </a>
 
-    <!-- Preload critical resources -->
-    <link rel="preload" href="js/particles.min.js" as="script">
-    <link rel="preload" href="js/anime-effects.js" as="script">
-    <link rel="preload" href="js/main.js" as="script">
-    
-    <!-- Load scripts with defer and async where appropriate -->
-    <script src="js/particles.min.js" defer></script>
-    <script src="js/anime-effects.js" defer></script>
-    <script src="js/main.js" defer></script>
-    
-    <!-- Service Worker Registration with better error handling -->
+    <!-- Performance Optimized Scripts -->
     <script>
-    if ('serviceWorker' in navigator) {
-        // Unregister any existing service workers first
-        navigator.serviceWorker.getRegistrations().then(registrations => {
-            for (const registration of registrations) {
-                console.log('Unregistering old service worker');
-                registration.unregister();
+    // Optimized script loader with better error handling and resource hints
+    function loadScript(src, { async = true, defer = false, module = false } = {}) {
+        return new Promise((resolve, reject) => {
+            if (document.querySelector(`script[src="${src}"]`)) {
+                console.log(`Script already loaded: ${src}`);
+                return resolve();
+            }
+
+            const script = document.createElement('script');
+            script.src = src;
+            script.async = async;
+            script.defer = defer;
+            if (module) script.type = 'module';
+            
+            // Add preconnect for external resources
+            if (src.startsWith('http')) {
+                const url = new URL(src);
+                const preconnect = document.createElement('link');
+                preconnect.rel = 'preconnect';
+                preconnect.href = url.origin;
+                document.head.appendChild(preconnect);
+            }
+
+            script.onload = () => {
+                console.log(`Loaded: ${src}`);
+                resolve();
+            };
+            
+            script.onerror = (err) => {
+                console.error(`Error loading ${src}:`, err);
+                reject(err);
+            };
+            
+            // Use requestIdleCallback to load non-critical scripts during idle time
+            const load = () => document.body.appendChild(script);
+            if ('requestIdleCallback' in window) {
+                requestIdleCallback(load, { timeout: 2000 });
+            } else {
+                setTimeout(load, 0);
+            }
+        });
+    }
+
+    // Load critical scripts immediately
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('DOM fully loaded');
+        
+        // Load data.js and main.js as critical scripts
+        Promise.all([
+            loadScript('js/data.js', { defer: true }),
+            loadScript('js/main.js', { defer: true })
+        ]).then(() => {
+            console.log('Critical scripts loaded');
+            
+            // Load non-critical scripts with lower priority
+            if ('requestIdleCallback' in window) {
+                requestIdleCallback(() => {
+                    loadScript('js/anime-effects.js')
+                        .then(() => console.log('anime-effects.js loaded'))
+                        .catch(err => console.error('Error loading anime-effects.js:', err));
+                }, { timeout: 2000 });
             }
             
-            // Register the new service worker
-            window.addEventListener('load', function() {
-                navigator.serviceWorker.register('/sw.js')
-                    .then(registration => {
-                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
-                        
-                        // Check for updates
-                        registration.update().then(() => {
-                            console.log('ServiceWorker updated');
-                        }).catch(err => {
-                            console.log('ServiceWorker update check failed:', err);
+            // Lazy load particles.js when in viewport
+            const particlesSection = document.querySelector('.particles');
+            if (particlesSection) {
+                const observer = new IntersectionObserver((entries, observer) => {
+                    if (entries[0].isIntersecting) {
+                        loadScript('js/particles.min.js')
+                            .then(() => {
+                                if (typeof particlesJS === 'function') {
+                                    particlesJS('particles-js', {
+                                        particles: {
+                                            number: { 
+                                                value: 80,  // Reduced number of particles for better performance
+                                                density: {
+                                                    enable: true,
+                                                    value_area: 1000  // Controls the density
+                                                }
+                                            },
+                                            size: {
+                                                value: 2,  // Smaller particles
+                                                random: true,
+                                                anim: {
+                                                    enable: true,
+                                                    speed: 2,
+                                                    size_min: 0.5,
+                                                    size_max: 3,
+                                                sync: false
+                                            }
+                                        },
+                                        line_linked: {
+                                            enable: true,
+                                            distance: 150,  // Slightly longer connections
+                                            color: '#ffffff',
+                                            opacity: 0.3,  // Slightly more visible connections
+                                            width: 0.8     // Slightly thicker connection lines
+                                        },
+                                        move: {
+                                            enable: true,
+                                            speed: 1.5,     // Slightly faster movement
+                                            direction: 'none',
+                                            random: true,   // Add some randomness
+                                            straight: false,
+                                            out_mode: 'bounce', // Bounce at edges
+                                            bounce: true,
+                                            attract: {
+                                                enable: false,
+                                                rotateX: 600,
+                                                rotateY: 1200
+                                            }
+                                        }
+                                    },
+                                    interactivity: {
+                                        detect_on: 'canvas',
+                                        events: {
+                                            onhover: {
+                                                enable: true,
+                                                mode: 'grab'
+                                            },
+                                            onclick: {
+                                                enable: true,
+                                                mode: 'push'
+                                            },
+                                            resize: true
+                                        }
+                                    },
+                                    retina_detect: true
+                                });
+                            }
                         });
-                    })
-                    .catch(err => {
-                        console.error('ServiceWorker registration failed: ', err);
-                    });
-            });
-        });
-        
-        // Force update the service worker when the page is fully loaded
-        window.addEventListener('load', function() {
-            if (navigator.serviceWorker.controller) {
-                navigator.serviceWorker.controller.postMessage({type: 'SKIP_WAITING'});
+                        observer.disconnect();
+                    }
+                }, { threshold: 0.1 });
+                observer.observe(particlesSection);
             }
+        }, 100);
+    });
+    </script>
+    
+    <!-- Performance Monitoring -->
+    <script>
+    (function() {
+        'use strict';
+
+        // Function to safely get timing metrics
+        function getTimingMetrics() {
+            if (!('performance' in window) || !performance.timing) {
+                return null;
+            }
+
+            const timing = performance.timing;
+            const now = Date.now();
+            
+            // Ensure we only return positive values
+            const safeTiming = (end, start) => {
+                const value = end - start;
+                return value > 0 ? value : 0;
+            };
+
+            return {
+                dns: safeTiming(timing.domainLookupEnd, timing.domainLookupStart),
+                tcp: safeTiming(timing.connectEnd, timing.connectStart),
+                ttfb: safeTiming(timing.responseStart, timing.requestStart),
+                pageLoad: safeTiming(timing.loadEventStart, timing.navigationStart),
+                domReady: safeTiming(timing.domComplete, timing.domLoading),
+                contentLoad: safeTiming(timing.domContentLoadedEventStart, timing.domLoading),
+                timeToInteractive: timing.domInteractive - timing.navigationStart,
+                timestamp: now
+            };
+        }
+
+        // Log performance metrics
+        function logPerformanceMetrics() {
+            const metrics = getTimingMetrics();
+            if (!metrics) return;
+            
+            console.log('Performance Metrics:', metrics);
+            
+            // Send to analytics if available
+            if (window.gtag) {
+                gtag('event', 'timing_complete', {
+                    'name': 'page_load',
+                    'value': metrics.pageLoad,
+                    'event_category': 'Load Performance',
+                    'non_interaction': true
+                });
+            }
+        }
+        
+        // Web Vitals implementation with fallback
+        function initWebVitals() {
+            // Check if web-vitals is available
+            if (typeof window.webVitals === 'object') {
+                try {
+                    const { getCLS, getFID, getLCP, getFCP, getTTFB } = window.webVitals;
+                    
+                    // Only track these in production
+                    const isProd = window.location.hostname !== 'localhost' && 
+                                 window.location.protocol === 'https:';
+                    
+                    const reportHandler = (metric) => {
+                        console.log(metric);
+                        if (isProd && window.gtag) {
+                            gtag('event', metric.name, {
+                                'event_category': 'Web Vitals',
+                                'value': Math.round(metric.value),
+                                'event_label': metric.id,
+                                'non_interaction': true
+                            });
+                        }
+                    };
+                    
+                    // Register web vitals
+                    getCLS(reportHandler, { reportAllChanges: true });
+                    getFID(reportHandler);
+                    getLCP(reportHandler);
+                    getFCP(reportHandler);
+                    getTTFB(reportHandler);
+                    
+                    return;
+                } catch (e) {
+                    console.warn('Error initializing web-vitals:', e);
+                }
+            }
+            
+            // Fallback to basic metrics if web-vitals fails
+            logPerformanceMetrics();
+        }
+        
+        // Optimize images with IntersectionObserver
+        function optimizeImages() {
+            if (typeof document === 'undefined' || !('IntersectionObserver' in window)) {
+                return;
+            }
+            
+            const lazyImages = [].slice.call(document.querySelectorAll('img[loading="lazy"]'));
+            if (lazyImages.length === 0) return;
+            
+            const imageObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        if (img.dataset.src) {
+                            img.src = img.dataset.src;
+                            delete img.dataset.src;
+                        }
+                        if (img.dataset.srcset) {
+                            img.srcset = img.dataset.srcset;
+                            delete img.dataset.srcset;
+                        }
+                        img.classList.add('loaded');
+                        observer.unobserve(img);
+                    }
+                });
+            }, {
+                rootMargin: '200px 0px',
+                threshold: 0.01
+            });
+
+            lazyImages.forEach(img => imageObserver.observe(img));
+        }
+        
+        // Initialize everything when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load web-vitals from a reliable CDN
+            const loadWebVitals = () => {
+                const script = document.createElement('script');
+                script.src = 'https://cdn.jsdelivr.net/npm/web-vitals@2.1.4/dist/web-vitals.umd.min.js';
+                script.integrity = 'sha512-ERnOC/RU18OCMtOaSfDn2F/ZXwrqd/WtHXrFOuvtZioVrDBVlR3RpxAdHKUj9qfo2WVPFMbivQBW7RG7MP2Icg==';
+                script.crossOrigin = 'anonymous';
+                script.onload = initWebVitals;
+                script.onerror = () => {
+                    console.log('Web Vitals failed to load, using fallback metrics');
+                    logPerformanceMetrics();
+                };
+                document.head.appendChild(script);
+            };
+            
+            // Initialize with a small delay to avoid blocking rendering
+            if (document.readyState === 'complete') {
+                setTimeout(loadWebVitals, 0);
+            } else {
+                window.addEventListener('load', () => setTimeout(loadWebVitals, 0));
+            }
+            
+            // Optimize images
+            optimizeImages();
+            
+            // Log initial metrics after a short delay to ensure all resources are loaded
+            setTimeout(logPerformanceMetrics, 1000);
+        });
+    })();
+    </script>
+    
+    <!-- Fallback for browsers that don't support modules -->
+    <script nomodule>
+    // Basic performance logging for non-module browsers
+    if ('performance' in window) {
+        window.addEventListener('load', function() {
+            const timing = performance.timing;
+            console.log('Page loaded in', timing.loadEventStart - timing.navigationStart, 'ms');
         });
     }
     </script>
     
+    <!-- Service Worker Registration -->
+    <script>
+    (function() {
+        'use strict';
+
+        // Function to show update notification
+        function showUpdateNotification() {
+            try {
+                const toast = document.createElement('div');
+                Object.assign(toast.style, {
+                    position: 'fixed',
+                    bottom: '20px',
+                    right: '20px',
+                    padding: '15px 25px',
+                    background: '#333',
+                    color: '#fff',
+                    borderRadius: '5px',
+                    zIndex: '10000',
+                    cursor: 'pointer',
+                    boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
+                });
+                
+                toast.textContent = 'New version available! Click to update.';
+                toast.onclick = () => window.location.reload();
+                document.body.appendChild(toast);
+                
+                // Auto-hide after 10 seconds
+                setTimeout(() => {
+                    toast.style.opacity = '0';
+                    toast.style.transition = 'opacity 0.5s';
+                    setTimeout(() => {
+                        if (toast && toast.parentNode) {
+                            toast.remove();
+                        }
+                    }, 500);
+                }, 10000);
+            } catch (error) {
+                console.error('Error showing update notification:', error);
+            }
+        }
+
+        // Function to register service worker
+        function registerServiceWorker() {
+            // Clear existing service workers
+            return navigator.serviceWorker.getRegistrations()
+                .then(registrations => {
+                    const unregisterPromises = registrations.map(reg => 
+                        reg.unregister().catch(err => 
+                            console.warn('Error unregistering service worker:', err)
+                        )
+                    );
+                    return Promise.all(unregisterPromises);
+                })
+                .then(() => {
+                    // Register new service worker
+                    return navigator.serviceWorker.register('sw.js', { 
+                        scope: '/',
+                        updateViaCache: 'none' 
+                    });
+                })
+                .then(registration => {
+                    console.log('ServiceWorker registered with scope:', registration.scope);
+                    
+                    // Check for updates
+                    if (registration.update) {
+                        registration.update().catch(console.warn);
+                    }
+                    
+                    // Listen for updates
+                    registration.addEventListener('updatefound', () => {
+                        const newWorker = registration.installing;
+                        if (newWorker) {
+                            newWorker.addEventListener('statechange', () => {
+                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                    console.log('New content available; please refresh.');
+                                    showUpdateNotification();
+                                }
+                            });
+                        }
+                    });
+                    
+                    // Handle controller changes
+                    navigator.serviceWorker.addEventListener('controllerchange', () => {
+                        console.log('Controller changed, reloading...');
+                        window.location.reload();
+                    });
+                    
+                    return registration;
+                })
+                .catch(err => {
+                    console.error('ServiceWorker registration failed:', err);
+                    throw err;
+                });
+        }
+
+        // Register service worker after page load to not block rendering
+        document.addEventListener('DOMContentLoaded', function() {
+            // Only register service worker in production
+            if ('serviceWorker' in navigator) {
+                const isProduction = window.location.hostname !== 'localhost' && window.location.protocol === 'https:';
+                
+                if (isProduction) {
+                    // Register with idle callback
+                    if (window.requestIdleCallback) {
+                        requestIdleCallback(registerServiceWorker, { timeout: 2000 });
+                    } else {
+                        setTimeout(registerServiceWorker, 2000);
+                    }
+                } else {
+                    // In development, unregister any existing service workers
+                    navigator.serviceWorker.getRegistrations()
+                        .then(registrations => {
+                            if (registrations.length > 0) {
+                                console.log('Development: Unregistering service workers...');
+                                return Promise.all(registrations.map(reg => reg.unregister()));
+                            }
+                            return null;
+                        })
+                        .catch(console.warn);
+                }
+            }
+        });
+    })();
+    </script>
     <!-- Inline critical data and scripts -->
     <script>
         // Create a single object to hold all data

@@ -114,82 +114,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
-// Skills Data
-const skillsData = {
-    frontend: [
-        { name: 'HTML5', level: 95, icon: 'fab fa-html5' },
-        { name: 'CSS3', level: 90, icon: 'fab fa-css3-alt' },
-        { name: 'JavaScript', level: 85, icon: 'fab fa-js' },
-       
-    ],
-   
-    tools: [
-        { name: 'Git', level: 90, icon: 'fab fa-git-alt' },
-        { name: 'GitHub', level: 85, icon: 'fab fa-github' },
-        { name: 'VS Code', level: 95, icon: 'fas fa-code' }
-    ]
-};
-
-// Projects Data
-const projectsData = [
-    {
-        id: 1,
-        title: 'Calculator',
-        category: 'web',
-        image: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2MDAgNDAwIj48cmVjdCB3aWR0aD0iNjAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iIzFhMWEyZSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IndoaXRlIiBkeT0iLjNlbSI+Q2FsY3VsYXRvcjwvdGV4dD48L3N2Zz4=',
-        description: 'A functional calculator built with HTML, CSS, and JavaScript.',
-        tech: ['HTML', 'CSS', 'JavaScript'],
-        demo: 'https://avanishmourya6-web.github.io/CALCULATOR/',
-        github: '#'
-    },
-    {
-        id: 2,
-        title: 'To-Do List',
-        category: 'web',
-        image: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2MDAgNDAwIj48cmVjdCB3aWR0aD0iNjAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iIzE2MjEzZSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IndoaXRlIiBkeT0iLjNlbSI+VG8tRG8gTGlzdDwvdGV4dD48L3N2Zz4=',
-        description: 'An interactive to-do list application with task management features.',
-        tech: ['HTML', 'CSS', 'JavaScript'],
-        demo: 'https://avanishmourya6-web.github.io/To-Do_List/',
-        github: '#'
-    },
-    {
-        id: 3,
-        title: 'Avi-Weather',
-        category: 'web',
-        image: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2MDAgNDAwIj48cmVjdCB3aWR0aD0iNjAwIiBoZWlnaHQ9IjQwMCIgZmlsbD0iIzBmMzQ2MCIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IndoaXRlIiBkeT0iLjNlbSI+V2VhdGhlciBBcHA8L3RleHQ+PC9zdmc+',
-        description: 'Weather application showing current weather and forecasts.',
-        tech: ['HTML', 'CSS', 'JavaScript', 'Weather API'],
-        demo: 'https://avanishmourya6-web.github.io/Weather-by-Avnish/',
-        github: '#'
-    }
-]
-// Blog Data
-const blogData = [
-    {
-        title: 'Getting Started with React Hooks',
-        date: 'June 15, 2023',
-        category: 'React',
-        image: 'https://via.placeholder.com/600x400/1a1a2e/ffffff?text=React+Hooks',
-        excerpt: 'Learn how to use React Hooks to simplify your functional components and manage state effectively.',
-        url: '#'
-    },
-    {
-        title: 'CSS Grid Layout: A Complete Guide',
-        date: 'May 28, 2023',
-        category: 'CSS',
-        image: 'https://via.placeholder.com/600x400/16213e/ffffff?text=CSS+Grid',
-        excerpt: 'Master CSS Grid Layout with this comprehensive guide covering all the properties and examples.',
-        url: '#'
-    },
-    {
-        title: 'Building RESTful APIs with Node.js',
-        date: 'April 10, 2023',
-        category: 'Node.js',
-        image: 'https://via.placeholder.com/600x400/0f3460/ffffff?text=Node.js+API',
-        excerpt: 'Step-by-step guide to building scalable and maintainable RESTful APIs using Node.js and Express.',
-        url: '#'
-    }
-];
+// All data is now loaded from data.js
 
 // Initialize Skills
 function initSkills() {
@@ -230,20 +155,45 @@ function initProjects() {
     
     if (!projectsGrid) return;
     
+    // Default project image
+    const defaultImage = 'img/project-placeholder.jpg';
+    
     projectsData.forEach(project => {
         const projectCard = document.createElement('div');
         projectCard.className = 'project-card';
         projectCard.setAttribute('data-category', project.category);
         
+        // Create project card content
         projectCard.innerHTML = `
-            <img src="${project.image}" alt="${project.title}">
+            <div class="project-image-container">
+                <img src="" data-src="${project.image}" alt="${project.title}" onerror="this.onerror=null; this.src='${defaultImage}'; this.classList.add('img-error');">
+                <div class="project-overlay"></div>
+            </div>
             <h3>${project.title}</h3>
             <p>${project.description}</p>
             <div class="project-links">
-                <a href="${project.demo}" class="btn btn-primary" target="_blank">Live Demo</a>
-                <a href="${project.github}" class="btn btn-outline" target="_blank">GitHub</a>
-            </div>
-        `;
+                <a href="${project.demo}" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Live Demo</a>
+                <a href="${project.github}" class="btn btn-outline" target="_blank" rel="noopener noreferrer">GitHub</a>
+            </div>`;
+            
+        // Lazy load images
+        const img = projectCard.querySelector('img');
+        if (img) {
+            // Set a placeholder initially
+            img.src = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MDAiIGhlaWdodD0iNDAwIiB2aWV3Qm94PSIwIDAgNjAwIDQwMCI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0iIzFhMWEyZSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiNmZmZmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiPiR7cHJvamVjdC50aXRsZX08L3RleHQ+PC9zdmc+';
+            
+            // Load the actual image
+            const imageLoader = new Image();
+            imageLoader.onload = function() {
+                img.src = project.image;
+                img.classList.add('loaded');
+            };
+            imageLoader.onerror = function() {
+                img.src = defaultImage;
+                img.classList.add('img-error');
+            };
+            imageLoader.src = project.image;
+        }
         projectsGrid.appendChild(projectCard);
     });
     
@@ -285,18 +235,42 @@ function initBlog() {
     
     if (!blogGrid) return;
     
+    // Check if blogData exists, if not, show a message
+    if (typeof blogData === 'undefined') {
+        blogGrid.innerHTML = `
+            <div class="coming-soon">
+                <h3>Blog Coming Soon!</h3>
+                <p>I'm currently working on some great content. Check back later!</p>
+            </div>
+        `;
+        return;
+    }
+    
+    // If blogData exists but is empty
+    if (!Array.isArray(blogData) || blogData.length === 0) {
+        blogGrid.innerHTML = `
+            <div class="no-posts">
+                <i class="fas fa-newspaper fa-3x"></i>
+                <h3>No Blog Posts Yet</h3>
+                <p>Stay tuned for upcoming articles and tutorials!</p>
+            </div>
+        `;
+        return;
+    }
+    
+    // If we have blog posts, render them
     blogData.forEach(post => {
         const postElement = document.createElement('div');
         postElement.className = 'blog-card';
         postElement.innerHTML = `
             <div class="blog-img">
-                <img src="${post.image}" alt="${post.title}">
+                <img src="${post.image || 'img/blog-placeholder.jpg'}" alt="${post.title || 'Blog Post'}" onerror="this.onerror=null; this.src='img/blog-placeholder.jpg';">
             </div>
             <div class="blog-content">
-                <span class="blog-date">${post.date} • ${post.category}</span>
-                <h3>${post.title}</h3>
-                <p>${post.excerpt}</p>
-                <a href="${post.url}" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                <span class="blog-date">${post.date || ''} ${post.date && post.category ? '•' : ''} ${post.category || ''}</span>
+                <h3>${post.title || 'Untitled Post'}</h3>
+                <p>${post.excerpt || 'No excerpt available.'}</p>
+                <a href="${post.url || '#'}" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
             </div>
         `;
         blogGrid.appendChild(postElement);
@@ -465,38 +439,55 @@ const initParticles = () => {
             retina_detect: true
         });
     }
-};
+}
 
-// Initialize all functions when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-    initParticles();
+// Make sure data is loaded before initializing
+function initializeApp() {
+    // Initialize components
     initSkills();
     initProjects();
     initContactForm();
     animateOnScroll();
     
-    // Add animation to skill levels on scroll
-    const skillLevels = document.querySelectorAll('.skill-level .level');
-    const skillObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const width = entry.target.style.width;
-                entry.target.style.width = '0';
-                setTimeout(() => {
-                    entry.target.style.width = width;
-                }, 100);
-                skillObserver.unobserve(entry.target);
-            }
-        });
-    }, { threshold: 0.5 });
-    
-    skillLevels.forEach(level => {
-        skillObserver.observe(level);
+    // Initialize particles after a small delay
+    setTimeout(() => {
+        initParticles();
+    }, 300);
+}
+
+console.log('main.js loaded, checking for data...');
+
+// Check if data is already loaded
+if (typeof skillsData !== 'undefined' && typeof projectsData !== 'undefined') {
+    console.log('Data already available, initializing app...');
+    initializeApp();
+} else {
+    console.log('Data not available yet, waiting...');
+    // Set up a mutation observer to watch for when data becomes available
+    const observer = new MutationObserver((mutations, obs) => {
+        if (typeof skillsData !== 'undefined' && typeof projectsData !== 'undefined') {
+            console.log('Data now available, initializing app...');
+            initializeApp();
+            obs.disconnect(); // Stop observing once data is loaded
+        }
     });
     
-    // Add animation to hero section elements
-    const heroContent = document.querySelector('.hero-content');
-    if (heroContent) {
+    // Start observing the document with the configured parameters
+    observer.observe(document, { childList: true, subtree: true });
+    
+    // Fallback in case the observer doesn't catch the data loading
+    setTimeout(() => {
+        if (typeof skillsData !== 'undefined' && typeof projectsData !== 'undefined' && !window.appInitialized) {
+            console.log('Data loaded in timeout, initializing app...');
+            window.appInitialized = true;
+            initializeApp();
+        }
+    }, 1000);
+}
+
+// Add animation to hero section elements
+const heroContent = document.querySelector('.hero-content');
+if (heroContent) {
         heroContent.style.opacity = '0';
         heroContent.style.transform = 'translateY(30px)';
         heroContent.style.transition = 'opacity 1s ease, transform 1s ease';
@@ -512,7 +503,6 @@ document.addEventListener('DOMContentLoaded', () => {
     floatingElements.forEach((element, index) => {
         element.style.animation = `float 6s ease-in-out ${index * 1.5}s infinite`;
     });
-});
 
 // Handle window resize
 window.addEventListener('resize', () => {
