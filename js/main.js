@@ -15,7 +15,16 @@ const preloadImages = () => {
     images.forEach(img => imageObserver.observe(img));
 };
 
+// Mobile menu elements
+let hamburger;
+let navLinks;
+
 document.addEventListener('DOMContentLoaded', () => {
+    // Initialize mobile menu elements
+    hamburger = document.querySelector('.hamburger');
+    navLinks = document.querySelector('.nav-links');
+    
+    // Initialize    
     const preloader = document.createElement('div');
     preloader.className = 'preloader';
     preloader.innerHTML = '<div class="loader"></div>';
@@ -33,24 +42,64 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 1000); // Reduced from 1500ms to 1000ms for faster initial load
 });
 
-// Mobile Navigation Toggle
-const hamburger = document.querySelector('.hamburger');
-const navLinks = document.querySelector('.nav-links');
-const navLinkItems = document.querySelectorAll('.nav-link');
+// Menu Toggle Functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const menuToggle = document.querySelector('.menu-toggle');
+    const navMenu = document.querySelector('.nav-menu');
+    const navLinks = document.querySelectorAll('.nav-link, .btn-primary');
 
-hamburger.addEventListener('click', () => {
-    hamburger.classList.toggle('active');
-    navLinks.classList.toggle('active');
-    document.body.style.overflow = navLinks.classList.contains('active') ? 'hidden' : 'auto';
-});
+    // Toggle menu when clicking the hamburger button
+    if (menuToggle && navMenu) {
+        menuToggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const isExpanded = this.getAttribute('aria-expanded') === 'true';
+            this.setAttribute('aria-expanded', !isExpanded);
+            this.classList.toggle('active');
+            navMenu.classList.toggle('active');
+            document.body.style.overflow = navMenu.classList.contains('active') ? 'hidden' : 'auto';
+        });
 
-// Close mobile menu when clicking on a nav link
-navLinkItems.forEach(link => {
-    link.addEventListener('click', () => {
-        hamburger.classList.remove('active');
-        navLinks.classList.remove('active');
-        document.body.style.overflow = 'auto';
-    });
+        // Close menu when clicking outside
+        document.addEventListener('click', function(e) {
+            if (navMenu.classList.contains('active') && 
+                !e.target.closest('.nav-menu') && 
+                !e.target.closest('.menu-toggle')) {
+                menuToggle.setAttribute('aria-expanded', 'false');
+                menuToggle.classList.remove('active');
+                navMenu.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+        });
+
+        // Close menu when clicking on a nav link (for mobile)
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 768) {
+                    menuToggle.setAttribute('aria-expanded', 'false');
+                    menuToggle.classList.remove('active');
+                    navMenu.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                }
+            });
+        });
+
+        // Handle window resize
+        let resizeTimer;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(() => {
+                if (window.innerWidth > 768) {
+                    // Reset menu state on desktop
+                    menuToggle.setAttribute('aria-expanded', 'false');
+                    menuToggle.classList.remove('active');
+                    navMenu.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                }
+            }, 250);
+        });
+    }
 });
 
 // Optimized scroll handler with requestAnimationFrame
@@ -155,8 +204,8 @@ function initProjects() {
     
     if (!projectsGrid) return;
     
-    // Default project image
-    const defaultImage = 'img/project-placeholder.jpg';
+    // Default project image as data URI to prevent 404 errors
+    const defaultImage = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2MDAgNDAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMWExYTJlIi8+PHRleHQgeD0iNTAiIHk9IjUwJSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiBmaWxsPSIjZmZmZmZmIiB0ZXh0LWFuY2hvcj0ibGVmdCIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSI+UHJvamVjdCBJbWFnZSBQbGFjZWhvbGRlcjwvdGV4dD48L3N2Zz4=';
     
     projectsData.forEach(project => {
         const projectCard = document.createElement('div');
@@ -166,7 +215,7 @@ function initProjects() {
         // Create project card content
         projectCard.innerHTML = `
             <div class="project-image-container">
-                <img src="" data-src="${project.image}" alt="${project.title}" onerror="this.onerror=null; this.src='${defaultImage}'; this.classList.add('img-error');">
+                <img src="${defaultImage}" data-src="${project.image}" alt="${project.title}" onerror="this.onerror=null; this.src='${defaultImage}'; this.classList.add('img-error');">
                 <div class="project-overlay"></div>
             </div>
             <h3>${project.title}</h3>
@@ -180,19 +229,21 @@ function initProjects() {
         const img = projectCard.querySelector('img');
         if (img) {
             // Set a placeholder initially
-            img.src = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MDAiIGhlaWdodD0iNDAwIiB2aWV3Qm94PSIwIDAgNjAwIDQwMCI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0iIzFhMWEyZSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiNmZmZmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiPiR7cHJvamVjdC50aXRsZX08L3RleHQ+PC9zdmc+';
+            img.src = defaultImage;
             
-            // Load the actual image
-            const imageLoader = new Image();
-            imageLoader.onload = function() {
-                img.src = project.image;
-                img.classList.add('loaded');
-            };
-            imageLoader.onerror = function() {
-                img.src = defaultImage;
-                img.classList.add('img-error');
-            };
-            imageLoader.src = project.image;
+            // Only try to load the actual image if it's not the default image
+            if (project.image && project.image !== defaultImage) {
+                const imageLoader = new Image();
+                imageLoader.onload = function() {
+                    img.src = project.image;
+                    img.classList.add('loaded');
+                };
+                imageLoader.onerror = function() {
+                    // If the image fails to load, the default image is already set
+                    img.classList.add('img-error');
+                };
+                imageLoader.src = project.image;
+            }
         }
         projectsGrid.appendChild(projectCard);
     });

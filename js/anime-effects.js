@@ -338,11 +338,6 @@ function initNameAnimation() {
 
 // Initialize all effects
 function initAnimeEffects() {
-    // Initialize particles
-    if (typeof particlesJS !== 'undefined') {
-        initParticles();
-    }
-
     // Initialize other effects
     createSpeedLines();
     createFloatingParticles();

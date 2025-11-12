@@ -902,12 +902,7 @@ section {
 .footer-logo {
   margin-bottom: 15px;
 }
-.footer-logo a {
-  color: var(--text-color);
-  font-size: 1.8rem;
-  font-weight: 700;
-  text-decoration: none;
-}
+
 .footer-logo span {
   color: var(--primary-color);
 }
