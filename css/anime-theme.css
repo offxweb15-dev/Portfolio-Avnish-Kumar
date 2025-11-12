@@ -1,18 +1,39 @@
-/* Anime Theme Styles */
+/* Optimized Anime Theme Styles */
 :root {
-    --anime-primary: #ff2d75; /* Pink accent */
-    --anime-secondary: #00f0ff; /* Cyan accent */
-    --anime-bg: #0a0a1a; /* Dark blue background */
+    --anime-primary: #ff2d75;
+    --anime-secondary: #00f0ff;
+    --anime-bg: #0a0a1a;
     --anime-card-bg: rgba(20, 15, 40, 0.8);
-    --anime-text-glow: 0 0 10px var(--anime-primary), 0 0 20px var(--anime-primary), 0 0 30px var(--anime-primary);
+    --anime-text-glow: 0 0 10px var(--anime-primary), 0 0 20px var(--anime-primary);
+    
+    /* Optimize for reduced motion */
+    --animation-duration: 0.4s;
 }
 
-/* Anime Hero Section */
+@media (prefers-reduced-motion: reduce) {
+    :root {
+        --animation-duration: 0.1s;
+    }
+    
+    *, 
+    *::before, 
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* Optimized Hero Section */
 .hero.anime-theme {
-    background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
+    background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%) no-repeat center center fixed;
+    background-size: cover;
     position: relative;
     overflow: hidden;
     z-index: 1;
+    content-visibility: auto;
+    contain: layout paint style;
 }
 
 /* Footer Logo */
@@ -23,7 +44,7 @@
     text-decoration: none;
 }
 
-/* Position particles above buttons but below other content */
+/* Optimized Particles */
 #particles-js {
     position: absolute;
     width: 100%;
@@ -31,7 +52,12 @@
     top: 0;
     left: 0;
     z-index: 2;
-    pointer-events: none; /* Allow clicks to pass through to buttons */
+    pointer-events: none;
+    will-change: transform, opacity;
+    contain: strict;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000px;
 }
 
 /* Position buttons behind particles but keep them clickable */
@@ -58,17 +84,41 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MDAiIGhlaWdodD0iNjAwIiB2aWV3Qm94PSIwIDAgNjAwIDYwMCI+PHBhdGggZmlsbD0iIzAwMDAwMCIgZD0iTTAgMGg2MDB2NjAwSDB6Ii8+PGNpcmNsZSBjeD0iMzAwIiBjeT0iMzAwIiByPSIyMDAiIGZpbGw9IiNmZjJkNzUiIG9wYWNpdHk9IjAuMSIvPjwvc3ZnPg==') center/cover no-repeat;
-    animation: pulse 8s infinite alternate;
     opacity: 0.3;
 }
 
 @keyframes pulse {
     0% { transform: scale(1); opacity: 0.3; }
-    100% { transform: scale(1.2); opacity: 0.5; }
+    50% { transform: scale(1.1); opacity: 0.4; }
+    100% { transform: scale(1); opacity: 0.3; }
 }
 
-/* Anime Character Overlay */
+/* Optimize animations */
+@keyframes float {
+    0%, 100% { transform: translateY(0) translateZ(0); }
+    50% { transform: translateY(-20px) translateZ(0); }
+}
+
+/* Optimize transitions */
+* {
+    scroll-behavior: smooth;
+}
+
+/* Optimize for mobile */
+@media (max-width: 768px) {
+    .anime-character {
+        max-width: 60%;
+        right: 0;
+    }
+    
+    /* Reduce animation intensity on mobile */
+    @keyframes float {
+        0%, 100% { transform: translateY(0) translateZ(0); }
+        50% { transform: translateY(-10px) translateZ(0); }
+    }
+}
+
+/* Optimized Character Overlay */
 .anime-character {
     position: absolute;
     bottom: 0;
@@ -78,6 +128,19 @@
     z-index: 2;
     filter: drop-shadow(0 0 20px rgba(255, 45, 117, 0.7));
     animation: float 6s ease-in-out infinite;
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    
+    /* Lazy loading */
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.anime-character.loaded {
+    opacity: 1;
 }
 
 /* Name text animation */

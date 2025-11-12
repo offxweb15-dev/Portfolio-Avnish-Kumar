@@ -1,4 +1,36 @@
-// Performance monitoring and optimization utilities
+/**
+ * Performance optimization utilities for enhanced loading and runtime performance
+ * @version 2.0.0
+ */
+
+// Performance budget in milliseconds
+const PERFORMANCE_BUDGET = {
+    FCP: 1800,  // First Contentful Paint
+    LCP: 2500,  // Largest Contentful Paint
+    TTI: 3800,  // Time to Interactive
+    TBT: 300,   // Total Blocking Time
+    CLS: 0.1,   // Cumulative Layout Shift
+};
+
+// Performance metrics collector
+const performanceMetrics = {
+    navigationStart: performance?.now() || Date.now(),
+    firstContentfulPaint: 0,
+    largestContentfulPaint: 0,
+    timeToInteractive: 0,
+    totalBlockingTime: 0,
+    cumulativeLayoutShift: 0,
+    memoryUsage: 0,
+    
+    // Track resource timing
+    resourceTimings: [],
+    
+    // Track long tasks
+    longTasks: [],
+    
+    // Track layout shifts
+    layoutShifts: []
+};
 
 /**
  * Logs performance metrics to the console and analytics
@@ -6,22 +38,64 @@
 function logPerformanceMetrics() {
     if (!('performance' in window)) return;
 
-    // Navigation Timing API metrics
-    const timing = performance.timing;
+    // Navigation Timing API v2
+    const [navigationEntry] = performance.getEntriesByType('navigation');
+    const [fcpEntry] = performance.getEntriesByName('first-contentful-paint');
+    const lcpEntries = performance.getEntriesByType('largest-contentful-paint');
+    const lcp = lcpEntries[lcpEntries.length - 1];
+    
+    // Calculate TBT (Total Blocking Time)
+    const longTaskEntries = performance.getEntriesByType('long-task');
+    const tbt = longTaskEntries.reduce((total, task) => {
+        return total + (task.duration - 50); // Tasks over 50ms are considered blocking
+    }, 0);
+
     const metrics = {
-        dns: timing.domainLookupEnd - timing.domainLookupStart,
-        tcp: timing.connectEnd - timing.connectStart,
-        ttfb: timing.responseStart - timing.requestStart,
-        pageLoad: timing.loadEventStart - timing.navigationStart,
-        domReady: timing.domComplete - timing.domLoading,
-        contentLoad: timing.domContentLoadedEventStart - timing.domLoading,
-        pageSize: performance.memory ? (performance.memory.usedJSHeapSize / 1024 / 1024).toFixed(2) + ' MB' : 'N/A'
+        // Core Web Vitals
+        fcp: fcpEntry?.startTime || 0,
+        lcp: lcp?.renderTime || lcp?.loadTime || 0,
+        tbt: Math.round(tbt),
+        cls: performanceMetrics.cumulativeLayoutShift,
+        fid: 0, // Will be updated by web-vitals
+        
+        // Navigation Timing
+        dns: navigationEntry?.domainLookupEnd - navigationEntry?.domainLookupStart || 0,
+        tcp: navigationEntry?.connectEnd - navigationEntry?.connectStart || 0,
+        ttfb: navigationEntry?.responseStart - navigationEntry?.requestStart || 0,
+        domReady: navigationEntry?.domComplete - navigationEntry?.domLoading || 0,
+        pageLoad: navigationEntry?.loadEventStart - navigationEntry?.startTime || 0,
+        
+        // Memory usage (if available)
+        memory: performance.memory ? {
+            usedJSHeapSize: (performance.memory.usedJSHeapSize / 1024 / 1024).toFixed(2) + ' MB',
+            totalJSHeapSize: (performance.memory.totalJSHeapSize / 1024 / 1024).toFixed(2) + ' MB',
+            jsHeapSizeLimit: (performance.memory.jsHeapSizeLimit / 1024 / 1024).toFixed(2) + ' MB'
+        } : 'N/A',
+        
+        // Performance budget compliance
+        budgetCompliance: {
+            fcp: (fcpEntry?.startTime || 0) <= PERFORMANCE_BUDGET.FCP,
+            lcp: (lcp?.renderTime || lcp?.loadTime || 0) <= PERFORMANCE_BUDGET.LCP,
+            tbt: tbt <= PERFORMANCE_BUDGET.TBT,
+            cls: performanceMetrics.cumulativeLayoutShift <= PERFORMANCE_BUDGET.CLS
+        }
     };
     
-    console.log('Performance Metrics:', metrics);
+    console.group('Performance Metrics');
+    console.table(metrics);
+    console.groupEnd();
     
     // Send to analytics if available
     if (window.gtag) {
+        // Core Web Vitals
+        gtag('event', 'web_vitals', {
+            'event_category': 'Web Vitals',
+            'event_label': 'FCP',
+            'value': Math.round(metrics.fcp),
+            'non_interaction': true
+        });
+        
+        // Performance timing
         gtag('event', 'timing_complete', {
             'name': 'page_load',
             'value': metrics.pageLoad,
@@ -29,75 +103,222 @@ function logPerformanceMetrics() {
             'non_interaction': true
         });
     }
+    
+    return metrics;
 }
 
 /**
- * Reports Web Vitals metrics
+ * Optimizes image loading with lazy loading, responsive images, and priority hints
  */
-function reportWebVitals() {
-    if (typeof window === 'undefined' || !('performance' in window)) return;
-
-    const reportHandler = (metric) => {
-        console.log(metric.name, metric.value);
-        
-        // Send to analytics if available
-        if (window.gtag) {
-            gtag('event', 'web_vitals', {
-                'event_category': 'Web Vitals',
-                'event_label': metric.name,
-                'value': Math.round(metric.value),
-                'non_interaction': true
-            });
+function optimizeImages() {
+    if (typeof document === 'undefined' || !('IntersectionObserver' in window)) return;
+    
+    const lazyImages = [].slice.call(document.querySelectorAll('img[loading="lazy"]'));
+    if (!lazyImages.length) return;
+    
+    // Preconnect to image CDN if not already connected
+    const imageDomains = new Set();
+    lazyImages.forEach(img => {
+        try {
+            const url = new URL(img.dataset.src || img.src);
+            imageDomains.add(url.origin);
+        } catch (e) {}
+    });
+    
+    imageDomains.forEach(domain => {
+        const link = document.createElement('link');
+        link.rel = 'preconnect';
+        link.href = domain;
+        document.head.appendChild(link);
+    });
+    
+    // Configure Intersection Observer with performance optimizations
+    const imageObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (!entry.isIntersecting) return;
+            
+            const img = entry.target;
+            const src = img.dataset.src;
+            const srcset = img.dataset.srcset;
+            
+            // Load the image
+            if (src) {
+                // Use requestIdleCallback for non-critical image loading
+                const loadImage = () => {
+                    img.onload = () => {
+                        img.removeAttribute('data-src');
+                        img.classList.add('loaded');
+                        if (srcset) img.removeAttribute('data-srcset');
+                        observer.unobserve(img);
+                    };
+                    img.src = src;
+                    if (srcset) img.srcset = srcset;
+                };
+                
+                // Use requestIdleCallback if available, otherwise load immediately
+                if ('requestIdleCallback' in window) {
+                    requestIdleCallback(loadImage, { timeout: 2000 });
+                } else {
+                    loadImage();
+                }
+            }
+        });
+    }, {
+        rootMargin: '200px 0px',
+        threshold: 0.01
+    });
+    
+    // Observe all lazy images
+    lazyImages.forEach(img => {
+        // Add a small placeholder for better CLS
+        if (!img.getAttribute('width') || !img.getAttribute('height')) {
+            const width = img.offsetWidth || 100;
+            const height = img.offsetHeight || Math.round(width * 0.75);
+            img.setAttribute('width', width);
+            img.setAttribute('height', height);
+            img.style.aspectRatio = `${width} / ${height}`;
         }
-    };
-
-    // Load web-vitals library and report metrics
-    import('web-vitals').then(({ getCLS, getFID, getFCP, getLCP, getTTFB }) => {
-        getCLS(reportHandler, true);
-        getFID(reportHandler);
-        getFCP(reportHandler);
-        getLCP(reportHandler);
-        getTTFB(reportHandler);
-    }).catch(err => {
-        console.warn('Could not load web-vitals:', err);
+        
+        // Add a low-quality image placeholder if available
+        if (img.dataset.lqip) {
+            img.style.background = `url('${img.dataset.lqip}') no-repeat center/cover`;
+        }
+        
+        imageObserver.observe(img);
+    });
+    
+    // Handle responsive images
+    const sources = document.querySelectorAll('source[data-srcset]');
+    sources.forEach(source => {
+        if (source.dataset.srcset) {
+            source.srcset = source.dataset.srcset;
+            source.removeAttribute('data-srcset');
+        }
     });
 }
 
 /**
- * Optimizes image loading with lazy loading and responsive images
+ * Optimizes animations for better performance
  */
-function optimizeImages() {
-    if (typeof document === 'undefined') return;
+function optimizeAnimations() {
+    // Add will-change to elements that will be animated
+    const animatedElements = document.querySelectorAll('.animate, [class*="animate-"]');
+    animatedElements.forEach(el => {
+        el.style.willChange = 'transform, opacity';
+        el.style.backfaceVisibility = 'hidden';
+        el.style.perspective = '1000px';
+    });
     
-    // Lazy load images with Intersection Observer
-    if ('IntersectionObserver' in window) {
-        const lazyImages = [].slice.call(document.querySelectorAll('img[loading="lazy"]'));
+    // Reduce motion preference
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        document.documentElement.style.scrollBehavior = 'auto';
         
-        if (lazyImages.length === 0) return;
-        
-        const imageObserver = new IntersectionObserver((entries, observer) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const img = entry.target;
-                    if (img.dataset.src) {
-                        img.src = img.dataset.src;
-                        img.removeAttribute('data-src');
-                    }
-                    if (img.dataset.srcset) {
-                        img.srcset = img.dataset.srcset;
-                        img.removeAttribute('data-srcset');
-                    }
-                    img.classList.add('loaded');
-                    observer.unobserve(img);
-                }
-            });
-        }, {
-            rootMargin: '200px 0px', // Start loading images 200px before they're in view
-            threshold: 0.01
+        const animations = document.querySelectorAll('*');
+        animations.forEach(el => {
+            const style = getComputedStyle(el);
+            if (style.animationName !== 'none' || style.transition !== 'all 0s ease 0s') {
+                el.style.animation = 'none';
+                el.style.transition = 'none';
+            }
         });
-
-        lazyImages.forEach(img => imageObserver.observe(img));
     }
+}
+
+/**
+ * Optimizes third-party scripts loading
+ */
+function optimizeThirdPartyScripts() {
+    // Defer non-critical third-party scripts
+    const thirdPartyScripts = [
+        // Add any third-party scripts that can be deferred
+    ];
+    
+    // Load third-party scripts with resource hints
+    thirdPartyScripts.forEach(src => {
+        const link = document.createElement('link');
+        link.rel = 'preconnect';
+        link.href = new URL(src).origin;
+        document.head.appendChild(link);
+        
+        if (src.includes('analytics') || src.includes('google-analytics')) {
+            // Load analytics with lower priority
+            window.requestIdleCallback(() => {
+                const script = document.createElement('script');
+                script.src = src;
+                script.async = true;
+                document.body.appendChild(script);
+            }, { timeout: 5000 });
+        }
+    });
+}
+
+/**
+ * Initializes performance optimizations
+ */
+function initPerformanceOptimizations() {
+    // Optimize images and animations
+    optimizeImages();
+    optimizeAnimations();
+    
+    // Optimize third-party scripts
+    if ('requestIdleCallback' in window) {
+        requestIdleCallback(optimizeThirdPartyScripts, { timeout: 2000 });
+    } else {
+        optimizeThirdPartyScripts();
+    }
+    
+    // Log performance metrics after page load
+    if (document.readyState === 'complete') {
+        logPerformanceMetrics();
+    } else {
+        window.addEventListener('load', logPerformanceMetrics, { once: true });
+    }
+    
+    // Report Web Vitals
+    if (typeof window !== 'undefined' && 'performance' in window) {
+        import('web-vitals').then(({ getCLS, getFID, getFCP, getLCP, getTTFB }) => {
+            getCLS(metric => {
+                performanceMetrics.cumulativeLayoutShift = metric.value;
+                console.log('CLS:', metric.value);
+            }, true);
+            
+            getFID(metric => {
+                performanceMetrics.firstInputDelay = metric.value;
+                console.log('FID:', metric.value);
+            });
+            
+            getFCP(metric => {
+                performanceMetrics.firstContentfulPaint = metric.value;
+                console.log('FCP:', metric.value);
+            });
+            
+            getLCP(metric => {
+                performanceMetrics.largestContentfulPaint = metric.value;
+                console.log('LCP:', metric.value);
+            });
+            
+            getTTFB(console.log);
+        }).catch(console.warn);
+    }
+}
+
+// Initialize performance optimizations when DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initPerformanceOptimizations);
+} else {
+    // DOMContentLoaded has already fired
+    initPerformanceOptimizations();
+}
+
+// Export for module usage if needed
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+        logPerformanceMetrics,
+        optimizeImages,
+        optimizeAnimations,
+        optimizeThirdPartyScripts,
+        initPerformanceOptimizations
+    };
 }
 
 // Initialize performance monitoring when DOM is loaded

@@ -14,6 +14,7 @@
     <link rel="dns-prefetch" href="https://fonts.gstatic.com">
     <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
     <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
     
     <!-- Preload critical resources -->
     <link rel="preload" href="https://fonts.gstatic.com/s/poppins/v20/pxiEyp8kv8JHgFVrJJfecg.woff2" as="font" type="font/woff2" crossorigin>
@@ -85,10 +86,13 @@
     <link rel="preload" href="css/anime-theme.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <link rel="preload" href="css/projects.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <link rel="preload" href="css/blog.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript>
+        <link rel="stylesheet" href="css/anime-theme.css">
+        <link rel="stylesheet" href="css/projects.css">
+        <link rel="stylesheet" href="css/blog.css">
+    </noscript>
     
-    <!-- Load Google Fonts with display=swap and preconnect -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Load Google Fonts with display=swap -->
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"></noscript>
     
@@ -109,11 +113,17 @@
     
     <!-- Load Font Awesome from CDN with fallback -->
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" 
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'" 
           integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" 
           crossorigin="anonymous" 
           referrerpolicy="no-referrer" 
-          onerror="this.onerror=null;this.href='https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css'">
+          onerror="this.onload=null;this.href='https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css'">
+    <noscript>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" 
+              integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" 
+              crossorigin="anonymous" 
+              referrerpolicy="no-referrer">
+    </noscript>
     
     <!-- Image optimization settings -->
     <script>
@@ -273,7 +283,7 @@
                         <div class="greeting">I'm Avnish Kumar</div>
                     </div>
                 </h1>
-                <p class="subtitle">Frontend Developer & Anime Enthusiast<br>Creating digital experiences that tell a story</p>
+                <p class="subtitle">Frontend Developer <br>Creating digital experiences that tell a story</p>
                 <div class="speech-bubble">
                     Welcome to my portfolio!
                 </div>
@@ -870,7 +880,7 @@
                 .then(() => {
                     // Register new service worker
                     return navigator.serviceWorker.register('sw.js', { 
-                        scope: '/',
+                        scope: '/Portfolio-Avnish-Kumar/',
                         updateViaCache: 'none' 
                     });
                 })
