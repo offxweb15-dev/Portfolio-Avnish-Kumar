@@ -7,6 +7,34 @@
     <title>Avnish Kumar | Web Developer</title>
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     
+    <!-- Service Worker Cleanup -->
+    <script>
+    // Clean up any existing service workers to prevent caching issues
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+            navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                for (let registration of registrations) {
+                    registration.unregister().then(function() {
+                        console.log('Unregistered old service worker');
+                    }).catch(function(error) {
+                        console.error('Error unregistering service worker:', error);
+                    });
+                }
+                // Clear all caches
+                if ('caches' in window) {
+                    caches.keys().then(function(cacheNames) {
+                        cacheNames.forEach(function(cacheName) {
+                            caches.delete(cacheName).then(function() {
+                                console.log('Cleared cache:', cacheName);
+                            });
+                        });
+                    });
+                }
+            });
+        });
+    }
+    </script>
+    
     <!-- Preconnect to critical domains with dns-prefetch fallback -->
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
@@ -923,30 +951,78 @@
         document.addEventListener('DOMContentLoaded', function() {
             // Only register service worker in production
             if ('serviceWorker' in navigator) {
-                const isProduction = window.location.hostname !== 'localhost' && window.location.protocol === 'https:';
-                
-                if (isProduction) {
+                // Unregister any existing service workers first
+                navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                    for (let registration of registrations) {
+                        registration.unregister();
+                        console.log('Unregistered old service worker');
+                    }
+                    
+                    // Register new service worker with a delay to ensure unregistration completes
+                    function registerServiceWorker() {
+                        // Only register service worker in production
+                        if (window.location.hostname !== 'localhost' && window.location.protocol === 'https:') {
+                            const swUrl = './sw.js';
+                            
+                            navigator.serviceWorker.register(swUrl)
+                            .then(registration => {
+                                console.log('ServiceWorker registered with scope:', registration.scope);
+                                
+                                // Check for updates
+                                if (registration.update) {
+                                    registration.update().catch(console.warn);
+                                }
+                                
+                                // Listen for updates
+                                registration.addEventListener('updatefound', () => {
+                                    const newWorker = registration.installing;
+                                    if (newWorker) {
+                                        newWorker.addEventListener('statechange', () => {
+                                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                                console.log('New content available; please refresh.');
+                                                showUpdateNotification();
+                                            }
+                                        });
+                                    }
+                                });
+                                
+                                // Handle controller changes
+                                navigator.serviceWorker.addEventListener('controllerchange', () => {
+                                    console.log('Controller changed, reloading...');
+                                    window.location.reload();
+                                });
+                                
+                                return registration;
+                            })
+                            .catch(err => {
+                                console.error('ServiceWorker registration failed:', err);
+                                throw err;
+                            });
+                        } else {
+                            // In development, unregister any existing service workers
+                            navigator.serviceWorker.getRegistrations()
+                            .then(registrations => {
+                                if (registrations.length > 0) {
+                                    console.log('Development: Unregistering service workers...');
+                                    return Promise.all(registrations.map(reg => reg.unregister()));
+                                }
+                                return null;
+                            })
+                            .catch(console.warn);
+                        }
+                    }
+                    
                     // Register with idle callback
                     if (window.requestIdleCallback) {
                         requestIdleCallback(registerServiceWorker, { timeout: 2000 });
                     } else {
                         setTimeout(registerServiceWorker, 2000);
                     }
-                } else {
-                    // In development, unregister any existing service workers
-                    navigator.serviceWorker.getRegistrations()
-                        .then(registrations => {
-                            if (registrations.length > 0) {
-                                console.log('Development: Unregistering service workers...');
-                                return Promise.all(registrations.map(reg => reg.unregister()));
-                            }
-                            return null;
-                        })
-                        .catch(console.warn);
-                }
+                }).catch(console.warn);
             }
         });
-    })();
+    });
+    </script>
     </script>
     <!-- Inline critical data and scripts -->
     <script>

@@ -1,36 +1,46 @@
-const CACHE_NAME = 'portfolio-v2';
+const CACHE_NAME = 'portfolio-v3';
 const ASSETS = [
-  '/',
-  '/index.html',
-  '/css/style.min.css',
-  '/css/anime-theme.css',
-  '/js/main.js',
-  '/js/anime-effects.js',
-  '/img/portfolio.webp',
-  '/favicon.ico'
+  './',
+  './index.html',
+  './css/style.min.css',
+  './css/anime-theme.css',
+  './js/main.js',
+  './js/anime-effects.js',
+  './img/portfolio.webp',
+  './favicon.ico'
 ];
 
 // Install event - cache all static assets with better error handling
 self.addEventListener('install', event => {
+  self.skipWaiting(); // Activate new service worker immediately
+  
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => {
         console.log('Caching assets');
-        // Cache each asset individually to prevent total failure on single error
+        // Skip caching for these files as they might not exist or cause issues
+        const skipCache = ['/sw.js', 'sw.js'];
+        const assetsToCache = ASSETS.filter(url => !skipCache.includes(url));
+        
         return Promise.all(
-          ASSETS.map(url => {
-            return fetch(url, { credentials: 'same-origin' })
-              .then(response => {
-                if (!response.ok) {
-                  throw new Error(`Failed to fetch ${url}: ${response.status} ${response.statusText}`);
-                }
-                return cache.put(url, response);
-              })
-              .catch(err => {
-                console.warn(`Couldn't cache ${url}:`, err);
-                // Continue with other assets even if one fails
-                return Promise.resolve();
-              });
+          assetsToCache.map(url => {
+            // Convert to absolute URL for GitHub Pages
+            const absoluteUrl = new URL(url, self.location.origin).href;
+            
+            return fetch(absoluteUrl, { 
+              credentials: 'same-origin',
+              cache: 'no-store' // Skip HTTP cache
+            })
+            .then(response => {
+              if (!response.ok) {
+                throw new Error(`Failed to fetch ${url}: ${response.status}`);
+              }
+              return cache.put(url, response);
+            })
+            .catch(err => {
+              console.warn(`Couldn't cache ${url}:`, err);
+              return Promise.resolve();
+            });
           })
         );
       })
@@ -38,14 +48,13 @@ self.addEventListener('install', event => {
         console.error('Cache initialization error:', err);
       })
   );
-  // Force the waiting service worker to become active
-  self.skipWaiting();
 });
 
 // Activate event - clean up old caches
 self.addEventListener('activate', event => {
   const cacheWhitelist = [CACHE_NAME];
   
+  // Take control of all clients immediately
   event.waitUntil(
     caches.keys().then(cacheNames => {
       return Promise.all(
